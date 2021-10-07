@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+      li {
+        list-style: none;
+        align-content: center;
+      }
+      body {
+        display: flex;
+      }
+      .pokemon-list {
+        flex: 8;
+      }
+      .pokemon-info {
+        flex: 2;
+        padding-top: 35vh;
+      }
+      .details {
+        position: fixed;
+      }
+    </style>
+    <title>Haiquan's PokeDex</title>
+  </head>
+  <body>
+    <div class="pokemon-list"></div>
+    <div class="pokemon-info">
+      <ul class="details">
+        <li>---</li>
+        <li>name: ---</li>
+        <li>types: ---</li>
+        <li>weight: ---</li>
+        <li>height: ---</li>
+      </ul>
+    </div>
+  </body>
+  <script>
+    $(document).ready(function () {
+      // get pokemon images to render the list of pokemons
+      for (let i = 1; i <= 386; i++) {
+        $(".pokemon-list").append(
+          `<img class="pokemon" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i}.png" />`
+        );
+      }
+
+      // binding onclick function for each pokemon in the list and make api call based on the index of the pokemon
+      $(".pokemon").on("click", function () {
+        let index = $(this).index() + 1;
+        $.get(
+          `https://pokeapi.co/api/v2/pokemon/${index}`,
+          function (res) {
+            console.log(res.name);
+            console.log(res.weight);
+            console.log(res.height);
+            console.log(res.sprites.front_default);
+            res.types.forEach((type) => console.log(type.type.name));
+
+            $(`<ul class="details">
+                <li><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index}.png" /></li>
+                <li>Name: ${res.name}</li>
+                <li>Weight: ${res.weight}</li>
+                <li>Height: ${res.height}</li>
+                <li>Types: ${res.types.map((type) => " " + type.type.name)}</li>
+                </ul>`).replaceAll(".details");
+          },
+          "json"
+        );
+      });
+    });
+  </script>
+</html>
